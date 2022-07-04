@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 
 class RegisterFormScreen extends StatefulWidget {
@@ -56,7 +57,10 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                 borderSide: BorderSide(color: Colors.blue, width: 3.0),
               ),
                 label: Text('Phone number')),
-              
+              keyboardType: TextInputType.phone,
+              inputFormatters: [
+                FilteringTextInputFormatter.digitsOnly,
+              ],
               ),
             SizedBox(height: 10,),
             TextFormField(
