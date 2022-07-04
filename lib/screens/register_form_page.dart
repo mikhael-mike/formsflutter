@@ -12,6 +12,7 @@ class RegisterFormScreen extends StatefulWidget {
 class _RegisterFormScreenState extends State<RegisterFormScreen> {
 
   var detailsInfo = Icon(Icons.delete, color: Colors.red,);
+  var _hidePass = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,15 +65,17 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
               ),
             SizedBox(height: 10,),
             TextFormField(
+              keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
+                
               suffixIcon: detailsInfo,
               prefix: Icon(Icons.email),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(20.0)),
                 borderSide: BorderSide(color: Colors.grey, width: 3.0),
+                
               ),
               label: Text('Email adress *'),
-              
               ),
               
               ),
@@ -82,20 +85,29 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
             ),
             SizedBox(height: 10,),
             TextFormField(
+              obscureText: _hidePass,
+              maxLength: 8,
               decoration: InputDecoration(
                 label: Text('Password *'),
+                
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(20.0)),
                   borderSide: BorderSide(style: BorderStyle.solid, width: 3, color: Colors.grey),
                 ),
-                suffixIcon: IconButton(onPressed: () {}, icon: Icon(Icons.visibility)),
+                suffixIcon: IconButton(onPressed: () {
+                  setState(() {
+                    _hidePass = !_hidePass;
+                  });
+                }, icon: _hidePass ? Icon(Icons.visibility) : Icon(Icons.visibility_off)),
                 prefixIcon: Icon(Icons.security),
                 
                 ),),
             SizedBox(height: 10,),
             TextFormField(
+              obscureText: _hidePass,
+              maxLength: 8,
               decoration: InputDecoration(
-                suffixIcon: IconButton(onPressed: () {}, icon: Icon(Icons.visibility)),
+                // suffixIcon: IconButton(onPressed: () {}, icon: Icon(Icons.visibility)),
                 label: Text('Confirm password *'),
                 icon: Icon(Icons.border_color),
                 helperText: 'Please confirm your password',
