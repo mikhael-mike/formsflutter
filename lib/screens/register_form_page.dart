@@ -9,6 +9,30 @@ class RegisterFormScreen extends StatefulWidget {
 }
 
 class _RegisterFormScreenState extends State<RegisterFormScreen> {
+
+
+  final _nameController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _listStoryController = TextEditingController();
+  final _passController = TextEditingController();
+  final _congPassController = TextEditingController();
+
+  
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _nameController.dispose();
+    _phoneController.dispose();
+    _emailController.dispose();
+    _passController.dispose();
+    _congPassController.dispose();
+
+    _listStoryController.dispose();
+    super.dispose();
+  }
+
   var detailsInfo = Icon(
     Icons.delete,
     color: Colors.red,
@@ -25,6 +49,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
             padding: EdgeInsets.all(16.0),
             children: [
               TextField(
+                controller: _nameController,
                 decoration: InputDecoration(
                   label: Text('Full Name *'),
                   hintText: 'What do people call you?',
@@ -45,6 +70,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                 height: 10,
               ),
               TextFormField(
+                controller: _phoneController,
                 decoration: InputDecoration(
                     hintText: 'Were we can reach you?',
                     helperText: 'Phone format: (xxx)xxxx xxx',
@@ -69,6 +95,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                 height: 10,
               ),
               TextFormField(
+                controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
                   suffixIcon: detailsInfo,
@@ -84,6 +111,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                 height: 10,
               ),
               TextFormField(
+                controller: _listStoryController,
                 decoration: InputDecoration(
                     label: Text('List story *'),
                     helperText: 'Keep it short is just a demo'),
@@ -93,6 +121,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                 height: 10,
               ),
               TextFormField(
+                controller: _passController,
                 obscureText: _hidePass,
                 maxLength: 8,
                 decoration: InputDecoration(
@@ -118,6 +147,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                 height: 10,
               ),
               TextFormField(
+                controller: _congPassController,
                 obscureText: _hidePass,
                 maxLength: 8,
                 decoration: InputDecoration(
@@ -146,12 +176,14 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                 shadowColor: Colors.black,
                 
                ),
-                onPressed: () {
-                  print('clicked');
-                },
+                onPressed: _submitForm,
               ),
             ],
           ),
         ));
+  }
+
+  void _submitForm() {
+    print('name ${_nameController.text}');
   }
 }
