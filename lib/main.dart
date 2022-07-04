@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:formsflutter/screens/register_form_page.dart';
+
+
+void main() => runApp(MyApp());
 
 
 class MyApp extends StatelessWidget {
@@ -7,11 +11,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Register form Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(),
+      home: RegisterFormScreen(),
     );
   }
 }
