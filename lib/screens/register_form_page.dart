@@ -11,6 +11,7 @@ class RegisterFormScreen extends StatefulWidget {
 class _RegisterFormScreenState extends State<RegisterFormScreen> {
 
   final _formKey = GlobalKey<FormState>();
+  final _scaaflodKey = GlobalKey<ScaffoldState>();
 
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
@@ -22,6 +23,10 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
   List<String> _countries = ['Israel', 'France', 'Germany', 'Britany'];
     String? _selectedCountry;
 
+    final _nameFocus = FocusNode();
+    final _phoneFocus = FocusNode();
+    final _passFocus = FocusNode();
+
   
 
   @override
@@ -32,9 +37,16 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
     _emailController.dispose();
     _passController.dispose();
     _congPassController.dispose();
-
     _listStoryController.dispose();
+    _nameFocus.dispose();
+    _phoneFocus.dispose();
+    _passFocus.dispose();
     super.dispose();
+  }
+
+  void fieldFocusChange(BuildContext context, FocusNode currentFocus, FocusNode nextFocus) {
+    currentFocus.unfocus();
+    FocusScope.of(context).requestFocus(nextFocus);
   }
 
   var detailsInfo = Icon(
@@ -45,6 +57,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaaflodKey,
         appBar: AppBar(
           title: Text('Register form Demo'),
         ),
@@ -54,6 +67,11 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
             padding: EdgeInsets.all(16.0),
             children: [
               TextFormField(
+                focusNode: _nameFocus,
+                autofocus: true,
+                onFieldSubmitted: (_) {
+                  fieldFocusChange(context, _nameFocus, _phoneFocus);
+                },
                 controller: _nameController,
                 decoration: InputDecoration(
                   label: Text('Full Name *'),
@@ -76,6 +94,10 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                 height: 10,
               ),
               TextFormField(
+                focusNode: _phoneFocus,
+                onFieldSubmitted: (_) {
+                  fieldFocusChange(context, _phoneFocus, _passFocus);
+                },
                 controller: _phoneController,
                 decoration: InputDecoration(
                     hintText: 'Were we can reach you?',
@@ -121,7 +143,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
               ),
               DropdownButtonFormField(
                 decoration: InputDecoration(
-                  border: OutlineInputBorder(),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0), borderSide: BorderSide(color: Colors.grey, width: 3.0)),
                   icon: Icon(Icons.map),
                   labelText: 'Country *',
                 ),
@@ -145,6 +167,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                 SizedBox(
                 height: 10,
               ),
+              
               TextFormField(
                 controller: _listStoryController,
                 decoration: InputDecoration(
@@ -160,6 +183,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                 height: 10,
               ),
               TextFormField(
+                focusNode: _passFocus,
                 controller: _passController,
                 obscureText: _hidePass,
                 maxLength: 8,
@@ -238,7 +262,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
     print('country: ${_selectedCountry}');
     print('story: ${_listStoryController.text}');
     } else {
-      print('Form is not saved becouse in app have wrong');
+      _showMessage(message: 'Form is not saved becouse in app have wrong');
     }
   }
 
@@ -276,5 +300,30 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
       } else {
         return null;
       }
+    }
+
+    void _showMessage({String? message}) {
+      // new method
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message as String, style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),
+          ),
+          duration: Duration(seconds: 3),
+        ),
+      );
+      // _scaaflodKey.currentState!.showSnackBar(
+      //   SnackBar(
+      //     content: Text(message as String, style: TextStyle(
+      //       fontWeight: FontWeight.bold,
+      //       fontSize: 18,
+      //     ),),
+      //     backgroundColor: Colors.red,
+      //     duration: Duration(seconds: 2),
+      //   ),
+      // );
+     
     }
 }
