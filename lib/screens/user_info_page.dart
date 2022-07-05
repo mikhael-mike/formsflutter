@@ -26,7 +26,7 @@ class UserInfoPage extends StatelessWidget {
             title: Text('${userInfo.name}', style: TextStyle(fontWeight: FontWeight.w500)),
             subtitle: Text('Story'),
             leading: Icon(Icons.person, color: Colors.green,),
-            trailing: Text('${userInfo.country.}'),
+            trailing: Text('${userInfo.country}'),
           ),
           ListTile(
             title: Text('${userInfo.phone}', style: TextStyle(fontWeight: FontWeight.w500),),
