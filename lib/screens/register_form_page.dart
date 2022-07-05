@@ -10,6 +10,7 @@ class RegisterFormScreen extends StatefulWidget {
 
 class _RegisterFormScreenState extends State<RegisterFormScreen> {
 
+  final _formKey = GlobalKey<FormState>();
 
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
@@ -17,6 +18,9 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
   final _listStoryController = TextEditingController();
   final _passController = TextEditingController();
   final _congPassController = TextEditingController();
+
+  List<String> _countries = ['Israel', 'France', 'Germany', 'Britany'];
+    String? _selectedCountry;
 
   
 
@@ -45,10 +49,11 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
           title: Text('Register form Demo'),
         ),
         body: Form(
+          key: _formKey,
           child: ListView(
             padding: EdgeInsets.all(16.0),
             children: [
-              TextField(
+              TextFormField(
                 controller: _nameController,
                 decoration: InputDecoration(
                   label: Text('Full Name *'),
@@ -65,6 +70,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                     borderSide: BorderSide(color: Colors.blue, width: 3.0),
                   ),
                 ),
+                validator: _validateName,
               ),
               SizedBox(
                 height: 10,
@@ -88,8 +94,10 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                     label: Text('Phone number')),
                 keyboardType: TextInputType.phone,
                 inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
+                  // FilteringTextInputFormatter.digitsOnly,
+                  FilteringTextInputFormatter(RegExp(r'^[()\d -]{1,15}$'), allow: true),
                 ],
+                validator: (value) => _validPhoneNumber(value as String) ? null : 'Phone number must be entered as (###)###-####',
               ),
               SizedBox(
                 height: 10,
@@ -106,8 +114,35 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                   ),
                   label: Text('Email adress *'),
                 ),
+                validator: _validateEmail,
               ),
               SizedBox(
+                height: 10,
+              ),
+              DropdownButtonFormField(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  icon: Icon(Icons.map),
+                  labelText: 'Country *',
+                ),
+                items: _countries.map((country) {
+                  return DropdownMenuItem(
+                    child: Text(country),
+                    value: country,
+                  );
+                }).toList(), 
+                onChanged: (data) {
+                  print(data);
+                  setState(() {
+                    _selectedCountry = data as String;
+                  });
+                },
+                value: _selectedCountry,
+                validator: (value) {
+                  return value == null ? 'Country must be selected' : null;
+                },
+                ),
+                SizedBox(
                 height: 10,
               ),
               TextFormField(
@@ -116,6 +151,10 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                     label: Text('List story *'),
                     helperText: 'Keep it short is just a demo'),
                 maxLines: 3,
+                inputFormatters: [
+                  LengthLimitingTextInputFormatter(100),
+                  
+                ],
               ),
               SizedBox(
                 height: 10,
@@ -142,6 +181,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                           : Icon(Icons.visibility_off)),
                   prefixIcon: Icon(Icons.security),
                 ),
+                validator: _validatePassword,
               ),
               SizedBox(
                 height: 10,
@@ -161,6 +201,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                         style: BorderStyle.solid, width: 3, color: Colors.grey),
                   ),
                 ),
+                validator: _validatePassword,
               ),
               const SizedBox(
                 height: 10,
@@ -184,10 +225,56 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
   }
 
   void _submitForm() {
-    print('name: ${_nameController.text}');
+    // 
+    // if checing
+    // _formKey.currentState.validate() is checking for state of _formKey*
+    //
+    if(_formKey.currentState!.validate()){
+      _formKey.currentState!.save();
+      print('form is valid');
+      print('name: ${_nameController.text}');
     print('Phone: ${_phoneController.text}');
     print('email: ${_emailController.text}');
+    print('country: ${_selectedCountry}');
     print('story: ${_listStoryController.text}');
-
+    } else {
+      print('Form is not saved becouse in app have wrong');
+    }
   }
+
+    String? _validateName(String? value) {
+      final _nameExp = RegExp(r'^[a-zA-Z ]+$');
+      if(value!.isEmpty) {
+        return 'Please enter your name';
+      } else if(!_nameExp.hasMatch(value)) {
+        return 'Please enter aplphavite characters';
+      } else {
+        return null;
+      }
+    }
+
+    bool _validPhoneNumber(String value) {
+      final _phoneExp = RegExp(r'^\(\d\d\d\)\d\d\d\-\d\d\d\d$');
+      return _phoneExp.hasMatch(value);
+    }
+
+    String? _validateEmail(String? email) {
+      if(email!.isEmpty) {
+        return 'Please set your email adress';
+      } else if(!_emailController.text.contains('@')) {
+        return 'Please set correct email adress';
+      } else {
+        return null;
+      }
+    }
+
+    String? _validatePassword(String? password) {
+      if(_passController.text.length != 8) {
+        return 'Please set your password';
+      } else if(_passController.text != _congPassController.text) {
+        return 'Please set your confirm pass correct';
+      } else {
+        return null;
+      }
+    }
 }
