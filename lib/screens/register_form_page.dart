@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:formsflutter/model/user.dart';
+import 'package:formsflutter/screens/user_info_page.dart';
 
 class RegisterFormScreen extends StatefulWidget {
   const RegisterFormScreen({Key? key}) : super(key: key);
@@ -27,6 +29,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
     final _phoneFocus = FocusNode();
     final _passFocus = FocusNode();
 
+  User newUser = User();
   
 
   @override
@@ -78,7 +81,15 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                   hintText: 'What do people call you?',
                   prefixIcon: Icon(Icons.person),
                   // suffixIcon: Icon(Icons.delete, color: Colors.red),
-                  suffixIcon: detailsInfo,
+                  suffixIcon: GestureDetector(
+                    onTap: () {
+                      _nameController.clear();
+                    },
+                    child: Icon(
+                      Icons.delete,
+                      color: Colors.red,
+                    ),
+                  ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(20.0)),
                     borderSide: BorderSide(color: Colors.grey, width: 3.0),
@@ -89,6 +100,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                   ),
                 ),
                 validator: _validateName,
+                onSaved: (value) => newUser.name = value as String,
               ),
               SizedBox(
                 height: 10,
@@ -108,7 +120,15 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                     ),
                     prefixIcon: Icon(Icons.phone),
                     // suffixIcon: Icon(Icons.delete, color: Colors.red),
-                    suffixIcon: detailsInfo,
+                    suffixIcon: GestureDetector(
+                      onLongPress: () {
+                        _phoneController.clear();
+                      },
+                      child: Icon(
+                        Icons.delete,
+                         color: Colors.red
+                         ),
+                    ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(20.0)),
                       borderSide: BorderSide(color: Colors.blue, width: 3.0),
@@ -120,6 +140,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                   FilteringTextInputFormatter(RegExp(r'^[()\d -]{1,15}$'), allow: true),
                 ],
                 validator: (value) => _validPhoneNumber(value as String) ? null : 'Phone number must be entered as (###)###-####',
+                onSaved: (value) => newUser.phone = value as String,
               ),
               SizedBox(
                 height: 10,
@@ -137,6 +158,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                   label: Text('Email adress *'),
                 ),
                 validator: _validateEmail,
+                onSaved: (value) => newUser.email = value as String,
               ),
               SizedBox(
                 height: 10,
@@ -153,16 +175,18 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                     value: country,
                   );
                 }).toList(), 
-                onChanged: (data) {
-                  print(data);
+                onChanged: (country) {
+                  print(country);
                   setState(() {
-                    _selectedCountry = data as String;
+                    _selectedCountry = country as String;
+                    newUser.country = country;
                   });
                 },
                 value: _selectedCountry,
-                validator: (value) {
-                  return value == null ? 'Country must be selected' : null;
-                },
+                // validator: (value) {
+                //   return value == null ? 'Country must be selected' : null;
+                // },
+                onSaved: (value) => newUser.country = value as String,
                 ),
                 SizedBox(
                 height: 10,
@@ -178,6 +202,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
                   LengthLimitingTextInputFormatter(100),
                   
                 ],
+                onSaved: (value) => newUser.story = value as String,
               ),
               SizedBox(
                 height: 10,
@@ -256,6 +281,7 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
     if(_formKey.currentState!.validate()){
       _formKey.currentState!.save();
       print('form is valid');
+      _showAlertmessage(name: _nameController.text);
       print('name: ${_nameController.text}');
     print('Phone: ${_phoneController.text}');
     print('email: ${_emailController.text}');
@@ -325,5 +351,26 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
       //   ),
       // );
      
+    }
+
+    void _showAlertmessage({String? name}) {
+      showDialog(
+        context: context, 
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Registration Successefull'),
+            content: Text('$name is now registered verify form', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),),
+            actions: [
+              FlatButton(
+                child: Text('Verifed!', style: TextStyle(fontSize: 18, color: Colors.green)),
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => UserInfoPage(userInfo: newUser,)));
+                },
+              )
+            ],
+          );
+        }
+        );
     }
 }
