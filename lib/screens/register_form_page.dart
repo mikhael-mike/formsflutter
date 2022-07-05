@@ -184,6 +184,10 @@ class _RegisterFormScreenState extends State<RegisterFormScreen> {
   }
 
   void _submitForm() {
-    print('name ${_nameController.text}');
+    print('name: ${_nameController.text}');
+    print('Phone: ${_phoneController.text}');
+    print('email: ${_emailController.text}');
+    print('story: ${_listStoryController.text}');
+
   }
 }
